@@ -18,8 +18,25 @@ class App extends Component {
       imageUrl: '',
       box: {},
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0, // used for tracking how many face uploaded
+        joined: '' // used for tracking when the accound first created
+      }
     };
+  }
+
+  loadUser = (data) => {
+    this.setState({user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries, // used for tracking how many face uploaded
+      joined: data.joined // used for tracking when the accound first created
+    }});
   }
 
   calculateFaceLocation = (data) => {
@@ -182,7 +199,7 @@ class App extends Component {
           route === 'home' ? 
           <div>
             <Logo />
-            <Rank />
+            <Rank name={this.state.user.name} entries={this.state.user.entries}/>
             <ImageLinkForm 
             onInputChange={this.onInputChange} 
             onButtonSubmit={this.onButtonSubmit}
@@ -191,9 +208,9 @@ class App extends Component {
           </div>
           :
           (
-            route === 'signin' ? <Signin onRouteChange={this.onRouteChange}/>
+            route === 'signin' ? <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
           :
-          <Register onRouteChange={this.onRouteChange}/>
+          <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
           )
         }
       </div>
