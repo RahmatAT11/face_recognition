@@ -10,23 +10,25 @@ import Particles from 'react-tsparticles';
 import {loadFull} from 'tsparticles';
 import './App.css';
 
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0, // used for tracking how many face uploaded
+    joined: '' // used for tracking when the accound first created
+  }
+};
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: {},
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0, // used for tracking how many face uploaded
-        joined: '' // used for tracking when the accound first created
-      }
-    };
+    this.state = initialState;
   }
 
   loadUser = (data) => {
@@ -101,10 +103,11 @@ class App extends Component {
             id: this.state.user.id
           }),
         })
-          .then(response => response.json())
-          .then(count => {
-            this.setState(Object.assign(this.state.user, {entries: count}));
-          });
+        .then(response => response.json())
+        .then(count => {
+          this.setState(Object.assign(this.state.user, {entries: count}));
+        })
+        .catch(err => console.log(err));
       }
 
       this.displayFaceBox(this.calculateFaceLocation(JSON.parse(response, null, response)))
@@ -125,9 +128,9 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signin') {
-      this.setState({isSignedIn: false})
+      this.setState(initialState);
     } else if (route === 'home') {
-      this.setState({isSignedIn: true})
+      this.setState({isSignedIn: true});
     }
     this.setState({route: route});
   }
