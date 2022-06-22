@@ -24,7 +24,6 @@ class Register extends React.Component {
     onSubmitSignIn = () => {
         fetch(`${this.props.serverUrl}register`, {
             method: 'post',
-            mode: 'same-origin',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 name: this.state.name,
