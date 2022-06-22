@@ -21,6 +21,7 @@ class Signin extends React.Component {
     onSubmitSignIn = () => {
         fetch(`${serverUrl}signin`, {
             method: 'post',
+            mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 email: this.state.signInEmail,
