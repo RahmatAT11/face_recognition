@@ -10,7 +10,7 @@ import Particles from 'react-tsparticles';
 import {loadFull} from 'tsparticles';
 import './App.css';
 
-const serverUrl = 'https://face-recognition-be.herokuapp.com/';
+const serverUrl = 'https://face-recognition-be.herokuapp.com';
 const initialState = {
   input: '',
   imageUrl: '',
