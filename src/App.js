@@ -10,6 +10,7 @@ import Particles from 'react-tsparticles';
 import {loadFull} from 'tsparticles';
 import './App.css';
 
+const serverUrl = 'https://face-recognition-be.herokuapp.com/';
 const initialState = {
   input: '',
   imageUrl: '',
@@ -41,7 +42,8 @@ class App extends Component {
     }});
   }
 
-  calculateFaceLocation = (data) => {
+  calculateFaceLocation = (input) => {
+    const data = JSON.parse(input, null)
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
@@ -63,9 +65,7 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-    this.setState({
-      imageUrl: this.state.input
-    })
+    this.setState({imageUrl: this.state.input});
     const raw = JSON.stringify({
       user_app_id: {
         user_id: "terika",
@@ -82,21 +82,18 @@ class App extends Component {
       ],
     });
 
-    fetch(
-      "https://api.clarifai.com/v2/models/f76196b43bbd45c99b4f3cd8e8b40a8a/outputs",
-      {
-        method: "POST",
-        headers: {
+    fetch("https://api.clarifai.com/v2/models/f76196b43bbd45c99b4f3cd8e8b40a8a/outputs",{
+      method: "POST",
+      headers: {
           Accept: "Application/json",
           Authorization: "Key d2260960c5c041aba24b511daca787a5"
-        },
-        body: raw,
-      }
-    )
-    .then((response) => response.text())
-    .then((response) => {
+      },
+      body: raw,
+    })
+    .then(response => response.text())
+    .then(response => {
       if (response) {
-        fetch('http://localhost:3001/image', {
+        fetch(`${serverUrl}image`, {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -110,15 +107,13 @@ class App extends Component {
         .catch(err => console.log(err));
       }
 
-      this.displayFaceBox(this.calculateFaceLocation(JSON.parse(response, null, response)))
+      this.displayFaceBox(this.calculateFaceLocation(response))
     })
     .catch(error => console.log("error", error));
   }
 
 
   particlesInit = async (main) => {
-    console.log(main);
-
     await loadFull(main);
   }
 
@@ -127,7 +122,7 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    if (route === 'signin') {
+    if (route === 'signout') {
       this.setState(initialState);
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
@@ -226,9 +221,9 @@ class App extends Component {
           </div>
           :
           (
-            route === 'signin' ? <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
+            route === 'signin' ? <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser} serverUrl={serverUrl}/>
           :
-          <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
+          <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} serverUrl={serverUrl}/>
           )
         }
       </div>
