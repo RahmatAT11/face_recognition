@@ -1,7 +1,4 @@
 import React from "react";
-
-const serverUrl = 'https://face-recognition-be.herokuapp.com/';
-
 class Signin extends React.Component {
     constructor(props) {
         super(props);
@@ -19,9 +16,9 @@ class Signin extends React.Component {
     }
 
     onSubmitSignIn = () => {
-        fetch(`${serverUrl}signin`, {
+        fetch(`${this.props.serverUrl}signin`, {
             method: 'post',
-            mode: 'no-cors',
+            mode: 'same-origin',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 email: this.state.signInEmail,
